@@ -1,0 +1,27 @@
+{
+  "name": "simplegrad",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simple reverse mode automatic differentiation of scalar values in javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anvaka/simplegrad.git"
+  },
+  "keywords": [
+    "autograd",
+    "autodiff"
+  ],
+  "author": "Andrei Kashcha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anvaka/simplegrad/issues"
+  },
+  "homepage": "https://github.com/anvaka/simplegrad#readme",
+  "devDependencies": {
+    "tap": "^15.1.5"
+  }
+}
