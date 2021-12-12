@@ -5,19 +5,19 @@ test('it can multiply stuff', (t) => {
   let vs = new ValueStorage();
   let a = new Variable(vs);
   let b = new Variable(vs);
-  let out = a.add(b).mul(a);
+  let f = a.add(b).mul(a);
 
-  out.compile();
+  f.compile();
   a.setValue(2);
   b.setValue(3);
 
-  out.forward();
-  t.equal(out.getValue(), 10);
+  f.forward();
+  t.equal(f.getValue(), 10);
 
-  out.setGradient(1)
-  out.backward();
+  f.setGradient(1)
+  f.backward();
 
-  t.equal(out.getGradient(), 1);
+  t.equal(f.getGradient(), 1);
   // out = (a + b) * a;
   // a.grad = 2 * a + b;
   t.equal(a.getGradient(), 2 * a.getValue() + b.getValue());
@@ -364,3 +364,35 @@ test('it can reference another variable', t => {
   t.equal(b.getGradient(), 2*2);
   t.end();
 });
+
+test('it can get dot file', t => {
+  let vs = new ValueStorage();
+
+  // use `uiName` to customize variable name in the dot
+  let a = new Variable(vs); a.uiName = 'a';
+  let b = new Variable(vs); b.uiName = 'b';
+
+  // Create and compile graph:
+  let f = a.add(b).mul(a); f.compile();
+
+  // Set initial values
+  a.setValue(2); b.setValue(3);
+
+  // Compute forward and backward:
+  f.forward();
+  f.setGradient(1);
+  f.backward();
+
+  // Print the dot file:
+  t.same(f.getDot(), `digraph G {
+0 [label="*\\n10.00 | 1.00"]
+1 [label="+\\n5.00 | 2.00"]
+2 [label="a\\n2.00 | 7.00"]
+3 [label="b\\n3.00 | 2.00"]
+0 -> 1
+0 -> 2
+1 -> 2
+1 -> 3
+}`);
+  t.end();
+})

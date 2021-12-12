@@ -24,7 +24,7 @@ at point `a = 2, b = 3`:
 import {Variable, ValueStorage} from 'simplegrad';
 
 // First, let's construct computational graph of our f(a, b) function:
-let valueStorage = new ValueStorage();
+let vs = new ValueStorage();
 
 let a = new Variable(vs);
 let b = new Variable(vs);
@@ -65,12 +65,13 @@ assert(b.getGradient() === a.getValue());
 
 If you open the hood of this library you'll notice a beautiful engine.
 Each `Variable` instance upon creation reserves a slot in the `ValueStorage`.
-`ValueStorage` is a simple object that stores values of variables in typed array:
+`ValueStorage` is a simple object that stores values of variables in typed arrays:
 
-```
+``` js
 // somewhere inside ValueStorage
 // `v` variable stores values of all variables for the forward pass:
 v = new Float64Array(variablesCount);
+
 // `gv` variable stores gradient values for the backward pass:
 gv = new Float64Array(variablesCount);
 ```
@@ -117,6 +118,50 @@ by javascript engines.
 Each operation that can be performed on `Variable` instance is implemented in
 [Variable.js](lib/Variable.js) file. You can easily extend it with your own custom
 functions.
+
+## Debugging graphs
+
+Sometimes it cannot be obvious what happens in the graph (especially if your graph
+is complex part of large RNN network). You can use `Variable.getDot()` method to get
+computational graph in a dot format and visualize it with [Graphviz](http://www.graphviz.org/):
+or online tools (e.g. http://magjac.com/graphviz-visual-editor/) .
+
+Let's take a simple example:
+
+```js
+let vs = new ValueStorage();
+
+// use `uiName` to customize variable name in the dot
+let a = new Variable(vs); a.uiName = 'a';
+let b = new Variable(vs); b.uiName = 'b';
+
+// Create and compile graph:
+let f = a.add(b).mul(a); f.compile();
+
+// Set initial values
+a.setValue(2); b.setValue(3);
+
+// Compute forward and backward:
+f.forward(); f.backward();
+
+// Print the dot file:
+console.log(f.getDot())
+```
+
+``` dot
+digraph G {
+  0 [label="*\n10.00 | 1.00"]
+  1 [label="+\n5.00 | 2.00"]
+  2 [label="a\n2.00 | 7.00"]
+  3 [label="b\n3.00 | 2.00"]
+  0 -> 1
+  0 -> 2
+  1 -> 2
+  1 -> 3
+}
+```
+
+![dot file image](https://i.imgur.com/3jVh3eW.png)
 
 ## Feedback
 
