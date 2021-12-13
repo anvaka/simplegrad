@@ -122,8 +122,8 @@ functions.
 ## Debugging graphs
 
 Sometimes it cannot be obvious what happens in the graph (especially if your graph
-is complex part of large RNN network). You can use `Variable.getDot()` method to get
-computational graph in a dot format and visualize it with [Graphviz](http://www.graphviz.org/):
+is complex part of large RNN). You can use `Variable.getDot()` method to get
+computational graph in a dot format and visualize it with [Graphviz](http://www.graphviz.org/)
 or online tools (e.g. http://magjac.com/graphviz-visual-editor/) .
 
 Let's take a simple example:
@@ -142,7 +142,9 @@ let f = a.add(b).mul(a); f.compile();
 a.setValue(2); b.setValue(3);
 
 // Compute forward and backward:
-f.forward(); f.backward();
+f.forward();
+f.setGradient(1);
+f.backward();
 
 // Print the dot file:
 console.log(f.getDot())
