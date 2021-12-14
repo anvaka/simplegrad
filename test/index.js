@@ -117,29 +117,6 @@ test('it can pow variable', t => {
   t.end();
 })
 
-test('it can pow variable', t => {
-  let vs = new ValueStorage();
-  let a = new Variable(vs);
-  let b = new Variable(vs);
-  let out = a.pow(b);
-  out.compile();
-  a.setValue(2); b.setValue(3);
-
-  out.forward();
-  t.equal(out.getValue(), 2 ** 3);
-
-  let globalGradient = 2;
-  out.setGradient(globalGradient);
-  out.backward();
-
-  t.equal(out.getGradient(), 2);
-  // gradient of (a ^ b) by a is (b * a ^ (b - 1))
-  t.equal(a.getGradient(), 3 * (2 ** (3 - 1)) * globalGradient);
-  // gradient of (a ^ b) by b is (log(a) * a ^ b)
-  t.equal(b.getGradient(), Math.log(2) * (2 ** 3) * globalGradient);
-  t.end();
-});
-
 test('it can pow constant', t => {
   let vs = new ValueStorage();
   let a = new Variable(vs);
