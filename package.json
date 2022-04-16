@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/anvaka/simplegrad#readme",
   "devDependencies": {
-    "tap": "^15.1.5"
+    "tap": "^16.0.1"
   }
 }
